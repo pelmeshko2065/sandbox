@@ -3,15 +3,23 @@ import { render } from 'react-dom'
 
 import './index.css'
 import 'semantic-ui-css/semantic.min.css'
-import {Dropdown, Input} from "semantic-ui-react";
-const options = [
-    { key: '.com', text: '.com', value: '.com' },
-    { key: '.net', text: '.net', value: '.net' },
-    { key: '.org', text: '.org', value: '.org' },
-]
+import App from "./App";
+import {AppContainer} from "react-hot-loader";
+require('react-hot-loader/patch');
 
-render(<Input
-    label={<Dropdown defaultValue='.com' options={options} />}
-    labelPosition='right'
-    placeholder='Find domain'
-/>, document.querySelector('#root'))
+render(<App/>, document.querySelector('#root'))
+if(module.hot){
+
+    module.hot.accept('./App', () => {
+
+        const NextApp = require('./App').default;
+
+        render(
+            <AppContainer>
+                <NextApp />
+            </AppContainer>,
+            document.getElementById('root')
+        );
+
+    });
+}
