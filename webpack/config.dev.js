@@ -1,11 +1,21 @@
-// const ReactRefreshWebpackPlugin = require('@pmmmwh/react-refresh-webpack-plugin')
-const { merge } = require('webpack-merge')
+const ReactRefreshWebpackPlugin = require('@pmmmwh/react-refresh-webpack-plugin')
+const webpack = require('webpack')
+const { mergeWithRules } = require('webpack-merge')
 
 const baseConfig = require('./config')
-const paths  = require('./paths')
+const paths = require('./paths')
 
-
-module.exports = merge(baseConfig, {
+module.exports = mergeWithRules({
+    module: {
+        rules: {
+            test: 'match',
+            use: {
+                loader: 'match',
+                options: 'replace',
+            },
+        },
+    },
+})(baseConfig, {
     mode: 'development',
     devServer: {
         host: 'localhost',
@@ -26,10 +36,11 @@ module.exports = merge(baseConfig, {
                     // It enables caching results in ./node_modules/.cache/babel-loader/
                     // directory for faster rebuilds.
                     cacheDirectory: true,
-                    plugins: ['react-hot-loader/babel'],
+                    presets: ['@babel/preset-react'],
+                    plugins: [require.resolve('react-refresh/babel')],
                 },
-            }
+            },
         ],
     },
-
+    plugins: [new webpack.HotModuleReplacementPlugin(), new ReactRefreshWebpackPlugin()],
 })
